@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Local apps
+    'django_filters',
     'tenants',
     'users',
     'bookings',
