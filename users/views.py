@@ -1,10 +1,26 @@
-from rest_framework import generics, permissions
-from rest_framework.response import Response
+from django.contrib.auth import authenticate
+from rest_framework import exceptions, generics, permissions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .serializers import UserSerializer, RegisterSerializer
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        authenticate_kwargs = {
+            self.username_field: attrs.get(self.username_field),
+            'password': attrs.get('password'),
+            'request': self.context.get('request'),
+        }
+        self.user = authenticate(**authenticate_kwargs)
+
+        if self.user is None:
+            raise exceptions.AuthenticationFailed(
+                self.error_messages['no_active_account'],
+                'no_active_account',
+            )
+
+        return super().validate(attrs)
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)

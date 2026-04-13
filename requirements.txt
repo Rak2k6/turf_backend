@@ -2,3 +2,5 @@ django>=5.0
 djangorestframework
 djangorestframework-simplejwt
 django-cors-headers
+django-filter
+drf-nested-routers
